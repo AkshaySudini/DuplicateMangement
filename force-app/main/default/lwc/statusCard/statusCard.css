@@ -1,0 +1,29 @@
+.status-circle {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-bottom: 5px;
+}
+
+/* Status-specific styles */
+.status-circle[data-status="Pending"] {
+    background-color: red;
+}
+
+.status-circle[data-status="Approved"] {
+    background-color: green;
+}
+
+.status-circle[data-status="Rejected"] {
+    background-color: orange;
+}
+
+.status-circle[data-status="Processed"] {
+    background-color: blue;
+}
+
+/* Default color for any unexpected status */
+.status-circle[data-status="default"] {
+    background-color: gray;
+}

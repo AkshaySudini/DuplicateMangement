@@ -1,0 +1,20 @@
+<template>
+    <lightning-card title="Staging Records Viewer" icon-name="custom:custom63">
+        <!-- Datatable to display staging records -->
+        <lightning-datatable 
+            key-field="Id"
+            data={stagingRecords}
+            columns={columns}
+            hide-checkbox-column
+            onsort={handleSort}>
+        </lightning-datatable>
+        
+        <!-- Show message if there are no records -->
+        <template if:true={stagingRecords}>
+            <p class="slds-p-around_medium">Displaying {stagingRecords.length} records.</p>
+        </template>
+        <template if:false={stagingRecords}>
+            <p class="slds-p-around_medium">No records found.</p>
+        </template>
+    </lightning-card>
+</template>
