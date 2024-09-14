@@ -1,0 +1,34 @@
+<template>
+    <lightning-card title="Potential Duplicates" icon-name="custom:custom63">
+        <template if:true={potentialDuplicateGroups}>
+            <template for:each={potentialDuplicateGroups} for:item="group">
+                <lightning-layout key={group.key} multiple-rows="true">
+                    <!-- Staging Records -->
+                    <lightning-layout-item size="6" class="slds-p-around_medium"> <!-- Added spacing here -->
+                        <h3>Potential Duplicates for Staging Record</h3>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={group.stagingRecord}
+                            columns={stagingColumns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </lightning-layout-item>
+
+                    <!-- Contact Records -->
+                    <lightning-layout-item size="6" class="slds-p-around_medium"> <!-- Added spacing here -->
+                        <h3>Potential Duplicates for Contact Records</h3>
+                        <lightning-datatable
+                            key-field="Id"
+                            data={group.contactRecords}
+                            columns={contactColumns}
+                            hide-checkbox-column>
+                        </lightning-datatable>
+                    </lightning-layout-item>
+                </lightning-layout>
+            </template>
+        </template>
+        <template if:false={potentialDuplicateGroups}>
+            <p>No potential duplicates found.</p>
+        </template>
+    </lightning-card>
+</template>

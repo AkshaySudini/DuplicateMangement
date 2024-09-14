@@ -1,0 +1,18 @@
+<template>
+    <lightning-card title="Exact Matches Between Staging and Contact Records" icon-name="custom:custom63">
+        <template if:true={matchedGroups}>
+            <lightning-datatable
+                key-field="Id"
+                data={matchedGroups}
+                columns={stagingColumns}
+                hide-checkbox-column
+                sorted-by={sortedBy}
+                default-sort-direction={sortedDirection}
+                onsort={handleSort}>
+            </lightning-datatable>
+        </template>
+        <template if:false={matchedGroups}>
+            <p class="slds-p-around_medium">No matching records found.</p>
+        </template>
+    </lightning-card>
+</template>
