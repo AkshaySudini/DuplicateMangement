@@ -1,11 +1,22 @@
 <template>
+   <!-- New Task Bar with Button Variations -->
+   <div class="slds-m-top_medium slds-m-bottom_x-large">
+
+    <!-- Button group: simple buttons with variations -->
+    <lightning-button-group>
+        <lightning-button label="Create Contact" icon-name="utility:save" variant="neutral"></lightning-button>
+        <lightning-button label="Approve" variant="neutral"></lightning-button>
+        <lightning-button label="Delete" variant="destructive" icon-name="utility:delete"></lightning-button>
+    </lightning-button-group>
+</div>
+
+
     <lightning-card title="Staging Records Viewer" icon-name="custom:custom63">
         <!-- Datatable to display staging records -->
         <lightning-datatable 
             key-field="Id"
             data={stagingRecords}
             columns={columns}
-            hide-checkbox-column
             onsort={handleSort}>
         </lightning-datatable>
         

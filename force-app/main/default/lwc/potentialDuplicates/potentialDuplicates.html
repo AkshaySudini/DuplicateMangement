@@ -1,31 +1,40 @@
 <template>
+
+    <!-- New Task Bar with Button Variations -->
+    <div class="slds-m-top_medium slds-m-bottom_x-large">
+
+        <!-- Button group: simple buttons with variations -->
+        <lightning-button-group>
+            <lightning-button label="Create Contact" icon-name="utility:save" variant="neutral"></lightning-button>
+            <lightning-button label="Approve" variant="neutral"></lightning-button>
+            <lightning-button label="Delete" variant="destructive" icon-name="utility:delete"></lightning-button>
+        </lightning-button-group>
+    </div>
+
+    <!-- Existing Content -->
     <lightning-card title="Potential Duplicates" icon-name="custom:custom63">
         <template if:true={potentialDuplicateGroups}>
-            <template for:each={potentialDuplicateGroups} for:item="group">
-                <lightning-layout key={group.key} multiple-rows="true">
-                    <!-- Staging Records -->
-                    <lightning-layout-item size="6" class="slds-p-around_medium"> <!-- Added spacing here -->
-                        <h3>Potential Duplicates for Staging Record</h3>
-                        <lightning-datatable
-                            key-field="Id"
-                            data={group.stagingRecord}
-                            columns={stagingColumns}
-                            hide-checkbox-column>
-                        </lightning-datatable>
-                    </lightning-layout-item>
+            <lightning-layout multiple-rows="true">
+                <!-- Staging Records -->
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <h3>Potential Duplicates for Staging Records</h3>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={allStagingRecords}
+                        columns={stagingColumns}>
+                    </lightning-datatable>
+                </lightning-layout-item>
 
-                    <!-- Contact Records -->
-                    <lightning-layout-item size="6" class="slds-p-around_medium"> <!-- Added spacing here -->
-                        <h3>Potential Duplicates for Contact Records</h3>
-                        <lightning-datatable
-                            key-field="Id"
-                            data={group.contactRecords}
-                            columns={contactColumns}
-                            hide-checkbox-column>
-                        </lightning-datatable>
-                    </lightning-layout-item>
-                </lightning-layout>
-            </template>
+                <!-- Contact Records -->
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <h3>Potential Duplicates for Contact Records</h3>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={allContactRecords}
+                        columns={contactColumns}>
+                    </lightning-datatable>
+                </lightning-layout-item>
+            </lightning-layout>
         </template>
         <template if:false={potentialDuplicateGroups}>
             <p>No potential duplicates found.</p>

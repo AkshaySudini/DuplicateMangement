@@ -1,33 +1,63 @@
 import { LightningElement, track, wire } from 'lwc';
-import findPotentialDuplicates from '@salesforce/apex/PotentialDuplicatesFinder.findPotentialDuplicates';
+import getPotentialDuplicates from '@salesforce/apex/PotentialDuplicatesFinder.findPotentialDuplicates';
+import { NavigationMixin } from 'lightning/navigation';
 
-export default class PotentialDuplicatesLWC extends LightningElement {
+export default class PotentialDuplicatesLWC extends NavigationMixin(LightningElement) {
     @track potentialDuplicateGroups = [];
+    @track allStagingRecords = []; // Combined list of all staging records
+    @track allContactRecords = []; // Combined list of all contact records
 
-    // Define columns for the staging datatable
+    // Define columns for the datatable
     stagingColumns = [
-        { label: 'First Name', fieldName: 'FirstName__c', type: 'text' },
-        { label: 'Last Name', fieldName: 'LastName__c', type: 'text' },
+        { 
+            label: 'Name', 
+            fieldName: 'nameLink', 
+            type: 'url', 
+            typeAttributes: { label: { fieldName: 'FullName' }, target: '_blank' } 
+        },
         { label: 'Email', fieldName: 'Email__c', type: 'email' },
-        { label: 'Phone', fieldName: 'Phone__c', type: 'phone' }
+        { label: 'Phone', fieldName: 'Phone__c', type: 'phone' },
+        { label: 'Birthdate', fieldName: 'Birthdate__c', type: 'date' }
     ];
 
-    // Define columns for the contact datatable
     contactColumns = [
-        { label: 'First Name', fieldName: 'FirstName', type: 'text' },
-        { label: 'Last Name', fieldName: 'LastName', type: 'text' },
+        { 
+            label: 'Name', 
+            fieldName: 'nameLink', 
+            type: 'url', 
+            typeAttributes: { label: { fieldName: 'FullName' }, target: '_blank' } 
+        },
         { label: 'Email', fieldName: 'Email', type: 'email' },
-        { label: 'Phone', fieldName: 'Phone', type: 'phone' }
+        { label: 'Phone', fieldName: 'Phone', type: 'phone' },
+        { label: 'Birthdate', fieldName: 'Birthdate', type: 'date' }
     ];
 
     // Wire method to fetch potential duplicates from Apex
-    @wire(findPotentialDuplicates)
+    @wire(getPotentialDuplicates)
     wiredPotentialDuplicates({ error, data }) {
         if (data) {
             this.potentialDuplicateGroups = data.map((group, index) => ({
                 key: `Group_${index}`,
-                stagingRecord: [group.stagingRecord], // Display as an array to match data-table format
+                stagingRecord: group.stagingRecord,
                 contactRecords: group.contactRecords
+            }));
+
+            // Combine all staging records and contact records into separate arrays with modified data for links
+            this.allStagingRecords = data.map(group => {
+                const record = group.stagingRecord;
+                return {
+                    ...record,
+                    FullName: `${record.FirstName__c} ${record.LastName__c}`,
+                    nameLink: `/lightning/r/Custom_Object__c/${record.Id}/view`
+                };
+            });
+
+            this.allContactRecords = data.flatMap(group => group.contactRecords.map(record => {
+                return {
+                    ...record,
+                    FullName: `${record.FirstName} ${record.LastName}`,
+                    nameLink: `/lightning/r/Contact/${record.Id}/view`
+                };
             }));
         } else if (error) {
             console.error('Error fetching potential duplicate records:', error);

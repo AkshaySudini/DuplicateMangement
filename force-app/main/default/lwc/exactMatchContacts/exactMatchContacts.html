@@ -1,11 +1,21 @@
 <template>
+    <!-- New Task Bar with Button Variations -->
+    <div class="slds-m-top_medium slds-m-bottom_x-large">
+
+        <!-- Button group: simple buttons with variations -->
+        <lightning-button-group>
+            <lightning-button label="Create Contact" icon-name="utility:save" variant="neutral"></lightning-button>
+            <lightning-button label="Approve" variant="neutral"></lightning-button>
+            <lightning-button label="Delete" variant="destructive" icon-name="utility:delete"></lightning-button>
+        </lightning-button-group>
+    </div>
+    <!-- Existing Content -->
     <lightning-card title="Exact Matches Between Staging and Contact Records" icon-name="custom:custom63">
         <template if:true={matchedGroups}>
             <lightning-datatable
                 key-field="Id"
                 data={matchedGroups}
                 columns={stagingColumns}
-                hide-checkbox-column
                 sorted-by={sortedBy}
                 default-sort-direction={sortedDirection}
                 onsort={handleSort}>
