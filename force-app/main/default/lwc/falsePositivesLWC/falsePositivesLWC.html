@@ -1,0 +1,53 @@
+<template>
+    <!-- New Task Bar with Button Variations -->
+    <div class="slds-m-top_medium slds-m-bottom_x-large">
+        <!-- Button group: simple buttons with variations -->
+        <lightning-button-group>
+            <lightning-button 
+                label="Create Contact" 
+                icon-name="utility:save" 
+                variant="neutral" 
+                onclick={handleCreateContact}>
+            </lightning-button>
+            <lightning-button 
+                label="Deny and Hold" 
+                variant="neutral" 
+                onclick={handleDenyAndHold}> <!-- Add onclick handler for Deny and Hold -->
+            </lightning-button>
+        </lightning-button-group>
+    </div>
+
+    <!-- Existing Content -->
+    <lightning-card title="Potential False Positives" icon-name="custom:custom63">
+        <template if:true={falsePositiveGroups}>
+            <lightning-layout multiple-rows="true">
+                <!-- Staging Records -->
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                    <strong><h3>Staging Records with match</h3></strong>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={allStagingRecords}
+                        show-row-number-column
+                        columns={stagingColumns}
+                        selected-rows={selectedRows}
+                        onrowselection={handleRowSelection}>
+                    </lightning-datatable>
+                </lightning-layout-item>
+
+                <!-- Contact Records -->
+                <lightning-layout-item size="6" class="slds-p-around_medium">
+                   <strong> <h3>Matched (Name) Contacts with Inconsistent Data Points</h3></Strong>
+                    <lightning-datatable
+                        key-field="Id"
+                        data={allContactRecords}
+                        columns={contactColumns}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </lightning-layout-item>
+            </lightning-layout>
+        </template>
+        <template if:false={falsePositiveGroups}>
+            <p>No potential false positives found.</p>
+        </template>
+    </lightning-card>
+</template>

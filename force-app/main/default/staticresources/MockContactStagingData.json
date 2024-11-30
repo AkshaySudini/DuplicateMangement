@@ -1,0 +1,28 @@
+{
+    "data": [
+        {
+            "FirstName": "John",
+            "LastName": "Doe",
+            "Email": "john.doe@example.com",
+            "Secondary_Email__c": "john.doe.secondary@example.com",
+            "Other_Email__c": "john.doe.other@example.com",
+            "umail__c": "u1234567@utah.edu",
+            "Phone": "1234567890",
+            "MobilePhone": "0987654321",
+            "OtherPhone": "1122334455",
+            "Birthdate": "1990-01-01"
+        },
+        {
+            "FirstName": "Jane",
+            "LastName": "Smith",
+            "Email": "jane.smith@example.com",
+            "Secondary_Email__c": "jane.smith.secondary@example.com",
+            "Other_Email__c": "jane.smith.other@example.com",
+            "umail__c": "u7654321@utah.edu",
+            "Phone": "2233445566",
+            "MobilePhone": "6677889900",
+            "OtherPhone": "4455667788",
+            "Birthdate": "1985-02-15"
+        }
+    ]
+}

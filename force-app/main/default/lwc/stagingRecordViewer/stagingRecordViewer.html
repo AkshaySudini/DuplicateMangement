@@ -1,19 +1,44 @@
 <template>
-    <lightning-card title="Staging Records Viewer" icon-name="custom:custom63">
+    <!-- Container for Button Group and Filter Combobox -->
+    <div class="slds-grid slds-gutters slds-m-top_medium slds-m-bottom_x-large slds-grid_align-spread">
+        <!-- Button group: simple buttons with variations -->
+        <div class="slds-col slds-grow">
+            <lightning-button-group>
+                <lightning-button label="Create Contact" icon-name="utility:save" variant="neutral" onclick={handleCreateContact}></lightning-button>
+                <lightning-button label="Deny and Hold" variant="neutral" onclick={handleDenyAndHold}></lightning-button> <!-- Added onclick for Deny and Hold -->
+                <lightning-button label="Delete" icon-name="utility:delete" variant="destructive" onclick={handleDeleteRecords} disabled={isDeleteDisabled}></lightning-button>
+            </lightning-button-group>
+        </div>
+
+        <!-- Filter by Status Combobox aligned to the right -->
+        <div class="slds-col slds-shrink slds-m-left_small"> <!-- Added slds-m-left_small class -->
+            <lightning-combobox
+                name="statusFilter"
+                label="Filter by Status"
+                value={selectedStatus}
+                placeholder="Select Status"
+                options={statusOptions}
+                onchange={handleStatusChange}>
+            </lightning-combobox>
+        </div>
+    </div>
+
+    <lightning-card title="Complete Records on Staging" icon-name="custom:custom63">
         <!-- Datatable to display staging records -->
         <lightning-datatable 
             key-field="Id"
-            data={stagingRecords}
+            data={filteredStagingRecords}
+            show-row-number-column
             columns={columns}
-            hide-checkbox-column
-            onsort={handleSort}>
+            onsort={handleSort}
+            onrowselection={handleRowSelection}>
         </lightning-datatable>
         
         <!-- Show message if there are no records -->
-        <template if:true={stagingRecords}>
-            <p class="slds-p-around_medium">Displaying {stagingRecords.length} records.</p>
+        <template if:true={filteredStagingRecords}>
+            <p class="slds-p-around_medium">Displaying {filteredStagingRecords.length} records.</p>
         </template>
-        <template if:false={stagingRecords}>
+        <template if:false={filteredStagingRecords}>
             <p class="slds-p-around_medium">No records found.</p>
         </template>
     </lightning-card>
