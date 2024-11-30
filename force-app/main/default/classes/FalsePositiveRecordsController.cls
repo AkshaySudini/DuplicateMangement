@@ -5,7 +5,7 @@ public with sharing class FalsePositiveRecordsController {
 
         // Fetch staging records
         List<Staging__c> stagingRecords = [
-            SELECT Id, FirstName__c, LastName__c, Email__c, Phone__c, Birthdate__c
+            SELECT Id, FirstName__c, LastName__c, Email__c, Phone__c, Birthdate__c, stagingStatus__c
             FROM Staging__c
             WHERE FirstName__c != NULL AND LastName__c != NULL
             ORDER BY FirstName__c, LastName__c

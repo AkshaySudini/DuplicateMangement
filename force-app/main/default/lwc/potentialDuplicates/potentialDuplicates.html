@@ -1,13 +1,10 @@
 <template>
-
     <!-- New Task Bar with Button Variations -->
     <div class="slds-m-top_medium slds-m-bottom_x-large">
-
         <!-- Button group: simple buttons with variations -->
         <lightning-button-group>
-            <lightning-button label="Create Contact" icon-name="utility:save" variant="neutral"></lightning-button>
-            <lightning-button label="Approve" variant="neutral"></lightning-button>
-            <lightning-button label="Delete" variant="destructive" icon-name="utility:delete"></lightning-button>
+            <lightning-button label="Create Contact" icon-name="utility:save" variant="neutral" onclick={handleCreateContact}></lightning-button>
+            <lightning-button label="Deny and Hold" variant="neutral" onclick={handleDenyAndHold}></lightning-button>
         </lightning-button-group>
     </div>
 
@@ -17,20 +14,23 @@
             <lightning-layout multiple-rows="true">
                 <!-- Staging Records -->
                 <lightning-layout-item size="6" class="slds-p-around_medium">
-                    <h3>Potential Duplicates for Staging Records</h3>
+                 <strong><h3>Potential Duplicates for Staging Records</h3></strong>
                     <lightning-datatable
                         key-field="Id"
                         data={allStagingRecords}
-                        columns={stagingColumns}>
+                        show-row-number-column
+                        columns={stagingColumns}
+                        onrowselection={handleRowSelection}>
                     </lightning-datatable>
                 </lightning-layout-item>
 
                 <!-- Contact Records -->
                 <lightning-layout-item size="6" class="slds-p-around_medium">
-                    <h3>Potential Duplicates for Contact Records</h3>
+                <strong><h3>Matched (LastName and (Email or Phone)) for Contact Records</h3></strong>   
                     <lightning-datatable
                         key-field="Id"
                         data={allContactRecords}
+                        hide-checkbox-column
                         columns={contactColumns}>
                     </lightning-datatable>
                 </lightning-layout-item>

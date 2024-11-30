@@ -4,16 +4,22 @@ public with sharing class PotentialDuplicatesFinder {
     public static List<PotentialDuplicateGroup> findPotentialDuplicates() {
         List<PotentialDuplicateGroup> indirectMatches = new List<PotentialDuplicateGroup>();
 
-        // Fetch JSON records from the staging object
-        List<Staging__c> stagingRecords = [SELECT Id, FirstName__c, LastName__c, Email__c, Secondary_Email__c, Other_Email__c, umail__c, Phone__c, MobilePhone__c, OtherPhone__c FROM Staging__c];
+        // Fetch JSON records from the staging object, including the stagingStatus__c field
+        List<Staging__c> stagingRecords = [SELECT Id, FirstName__c, LastName__c, Email__c, Secondary_Email__c, Other_Email__c, umail__c, Phone__c, MobilePhone__c, OtherPhone__c, Birthdate__c, StagingStatus__c FROM Staging__c];
         System.debug('Fetched Staging Records: ' + stagingRecords); // Debug log for fetched staging records
 
         // Fetch existing Contacts to compare with
-        List<Contact> contacts = [SELECT Id, FirstName, LastName, Email, Secondary_Email__c, Other_Email__c, Phone, MobilePhone, OtherPhone FROM Contact];
+        List<Contact> contacts = [SELECT Id, FirstName, LastName, Email, Secondary_Email__c, Other_Email__c, Phone, MobilePhone, OtherPhone, Birthdate FROM Contact];
         System.debug('Fetched Contact Records: ' + contacts); // Debug log for fetched contact records
 
         // Compare staging records with contacts to find potential indirect matches
         for (Staging__c staging : stagingRecords) {
+            // Skip staging records that have already been processed
+            if (staging.StagingStatus__c == 'Processed') {
+                System.debug('Skipping processed staging record: ' + staging.Id);
+                continue;
+            }
+
             List<Contact> matchingContacts = new List<Contact>();
 
             // Create sets for staging emails and phones

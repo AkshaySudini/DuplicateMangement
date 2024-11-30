@@ -1,65 +1,60 @@
 public with sharing class StagingContactExactMatchController {
 
     @AuraEnabled(cacheable=true)
-    public static List<MatchedGroupWrapper> getExactMatchesBetweenStagingAndContact() {
-        List<MatchedGroupWrapper> matchedGroups = new List<MatchedGroupWrapper>();
+    public static List<ExactMatchGroup> getExactMatchesBetweenStagingAndContact() {
+        List<ExactMatchGroup> exactMatches = new List<ExactMatchGroup>();
 
-        // SOQL query to fetch staging records
+        // Fetch records from the staging object including the stagingStatus__c field
         List<Staging__c> stagingRecords = [
-            SELECT Id, FirstName__c, LastName__c, Email__c, Phone__c 
-            FROM Staging__c 
-            WHERE Email__c != NULL AND Phone__c != NULL
-            ORDER BY FirstName__c, LastName__c, Email__c, Phone__c
+            SELECT Id, FirstName__c, LastName__c, Email__c, Phone__c, stagingStatus__c
+            FROM Staging__c
         ];
+        System.debug('Fetched Staging Records: ' + stagingRecords); // Debug log for fetched staging records
 
-        // Create Sets to store unique emails and phones for querying contacts
-        Set<String> emailSet = new Set<String>();
-        Set<String> phoneSet = new Set<String>();
-
-        // Populate the Sets with Email and Phone values from Staging records
-        for (Staging__c staging : stagingRecords) {
-            if (staging.Email__c != null) {
-                emailSet.add(staging.Email__c);
-            }
-            if (staging.Phone__c != null) {
-                phoneSet.add(staging.Phone__c);
-            }
-        }
-
-        // SOQL query to fetch matching contacts based on staging records
-        List<Contact> contactRecords = [
-            SELECT Id, FirstName, LastName, Email, Phone 
-            FROM Contact 
-            WHERE Email IN :emailSet OR Phone IN :phoneSet
+        // Fetch existing Contacts to compare with
+        List<Contact> contacts = [
+            SELECT Id, FirstName, LastName, Email, Phone
+            FROM Contact
         ];
+        System.debug('Fetched Contact Records: ' + contacts); // Debug log for fetched contact records
 
-        // Grouping logic
+        // Compare staging records with contacts to find exact matches
         for (Staging__c staging : stagingRecords) {
+            // Skip processed records
+            if (staging.stagingStatus__c == 'Processed') {
+                System.debug('Skipping processed staging record: ' + staging.Id);
+                continue;
+            }
+
             List<Contact> matchingContacts = new List<Contact>();
 
-            for (Contact contact : contactRecords) {
-                if ((staging.Email__c != null && staging.Email__c == contact.Email) ||
-                    (staging.Phone__c != null && staging.Phone__c == contact.Phone)) {
+            for (Contact contact : contacts) {
+                // Check for exact match based on the criteria (FirstName, LastName, Email, Phone)
+                if (staging.FirstName__c == contact.FirstName &&
+                    staging.LastName__c == contact.LastName &&
+                    staging.Email__c == contact.Email &&
+                    staging.Phone__c == contact.Phone) {
                     matchingContacts.add(contact);
+                    System.debug('Found Exact Match: ' + contact); // Debug log for exact match
                 }
             }
 
+            // Add to result if there are matches
             if (!matchingContacts.isEmpty()) {
-                matchedGroups.add(new MatchedGroupWrapper(staging, matchingContacts));
+                System.debug('Found Matching Contacts for Staging Record ' + staging.Id + ': ' + matchingContacts); // Debug log for all matching contacts for a staging record
+                ExactMatchGroup matchGroup = new ExactMatchGroup();
+                matchGroup.stagingRecord = staging;
+                matchGroup.contactRecords = matchingContacts;
+                exactMatches.add(matchGroup);
             }
         }
-
-        return matchedGroups;
+        System.debug('Final List of Exact Matches: ' + exactMatches); // Debug log for the final list of exact matches
+        return exactMatches;
     }
 
-    // Wrapper class to store matched records
-    public class MatchedGroupWrapper {
+    // Helper class for grouping exact matches
+    public class ExactMatchGroup {
         @AuraEnabled public Staging__c stagingRecord;
         @AuraEnabled public List<Contact> contactRecords;
-
-        public MatchedGroupWrapper(Staging__c staging, List<Contact> contacts) {
-            this.stagingRecord = staging;
-            this.contactRecords = contacts;
-        }
     }
 }
